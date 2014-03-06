@@ -1,0 +1,36 @@
+package com.tale.AndroidFrameworkLab;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import com.example.AndroidFramework.module.fragment.NavigationFragmentActivity;
+import com.example.AndroidFramework.module.fragment.NavigationViewPager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MyActivity extends NavigationFragmentActivity {
+
+    private static final List<Class<? extends Fragment>> pages;
+    static {
+        pages = new ArrayList<Class<? extends Fragment>>();
+        pages.add(ScreenSlidePageFragment.class);
+        pages.add(ScreenSlidePageFragment.class);
+        pages.add(ScreenSlidePageFragment.class);
+        pages.add(ScreenSlidePageFragment.class);
+        pages.add(ScreenSlidePageFragment.class);
+    }
+    /**
+     * Called when the activity is first created.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        NavigationViewPager viewPager = (NavigationViewPager) findViewById(R.id.viewpager);
+        viewPager.setSwipingEnabled(false);
+        configNavigation(viewPager, pages);
+    }
+
+
+}
