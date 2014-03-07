@@ -20,7 +20,7 @@ public class SQLiteUtil {
 
     private static SQLiteOpenHelperEx mSqLiteOpenHelperEx = null;
 
-    public static void init(Context context, AbsDBContract contract) {
+    public static void init(Context context, DBContract contract) {
         if (mSqLiteOpenHelperEx == null) {
             mSqLiteOpenHelperEx = new SQLiteOpenHelperEx(context.getApplicationContext(), contract);
         }
@@ -162,15 +162,15 @@ public class SQLiteUtil {
 
     private static void verify() {
         if (mSqLiteOpenHelperEx == null) {
-            throw new NullPointerException("Call init(Context context, AbsDBContract contract) first");
+            throw new NullPointerException("Call init(Context context, DBContract contract) first");
         }
     }
 
     private static class SQLiteOpenHelperEx extends SQLiteOpenHelper {
 
-        private AbsDBContract contract;
+        private DBContract contract;
 
-        public SQLiteOpenHelperEx(Context context, AbsDBContract contract) {
+        public SQLiteOpenHelperEx(Context context, DBContract contract) {
             super(context, contract.getDBName(), null, contract.getDBVersion());
             this.contract = contract;
         }
