@@ -1,4 +1,4 @@
-package com.example.AndroidFramework.utils;
+package com.talenguyen.androidframework.utils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

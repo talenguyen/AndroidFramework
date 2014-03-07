@@ -22,12 +22,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.example.AndroidFramework.module.fragment.NavigationFragmentActivity;
 
 /**
  * A fragment representing a single step in a wizard. The fragment shows a dummy title indicating
  * the page number, along with some dummy text.
- *
+ * <p/>
  * <p>This class is used by the {@link CardFlipActivity} and {@link
  * ScreenSlideActivity} samples.</p>
  */
@@ -62,11 +61,11 @@ public class ScreenSlidePageFragment extends Fragment {
         if (getArguments() != null) {
             mPageNumber = getArguments().getInt(ARG_PAGE);
         }
-}
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         // Inflate the layout containing a title and body text.
         ViewGroup rootView = (ViewGroup) inflater
                 .inflate(R.layout.fragment_screen_slide_page, container, false);
@@ -81,7 +80,7 @@ public class ScreenSlidePageFragment extends Fragment {
                 Bundle args = new Bundle();
                 args.putInt(ARG_PAGE, mPageNumber + 1);
 
-                ((NavigationFragmentActivity) getActivity()).setCurrentPage(mPageNumber + 1, args);
+                ((Na) getActivity()).setCurrentPage(mPageNumber + 1, args);
             }
         });
         return rootView;

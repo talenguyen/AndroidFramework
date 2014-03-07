@@ -1,9 +1,8 @@
-package com.example.AndroidFramework.module.fragment;
+package com.talenguyen.androidframework.module.module.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.*;
-import android.support.v4.view.ViewPager;
-import com.example.AndroidFramework.utils.ReflectionUtil;
+import com.talenguyen.androidframework.utils.ReflectionUtil;
 
 import java.util.Hashtable;
 import java.util.List;
