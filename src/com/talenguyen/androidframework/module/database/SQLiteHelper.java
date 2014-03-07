@@ -1,4 +1,4 @@
-package com.talenguyen.androidframework.module.database.androiddb.androiddb;
+package com.talenguyen.androidframework.module.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -107,12 +107,12 @@ public class SQLiteHelper {
         return null;
     }
 
-    private static boolean isIgnoreValue(Object value) {
-        if (Integer.MIN_VALUE == value || Long.MIN_VALUE == value|| Float.MIN_VALUE == value || Double.MIN_VALUE == value) {
-            return true;
-        }
-        return false;
-    }
+//    private static boolean isIgnoreValue(Object value) {
+//        if (Integer.MIN_VALUE == Integer.parseInt(value); || Long.MIN_VALUE == value|| Float.MIN_VALUE == value || Double.MIN_VALUE == value) {
+//            return true;
+//        }
+//        return false;
+//    }
 
 //    public static <T> T fromCursor(Cursor cursor, Class<? extends T> clazz) {
 //        if (cursor == null) {

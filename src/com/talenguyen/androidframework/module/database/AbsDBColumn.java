@@ -1,4 +1,4 @@
-package com.talenguyen.androidframework.module.database.androiddb.androiddb;
+package com.talenguyen.androidframework.module.database;
 
 /**
  * Created by TALE on 2/26/14.

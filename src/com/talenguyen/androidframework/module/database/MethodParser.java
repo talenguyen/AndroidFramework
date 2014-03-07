@@ -1,4 +1,4 @@
-package com.talenguyen.androidframework.module.database.androiddb.androiddb;
+package com.talenguyen.androidframework.module.database;
 
 import java.lang.reflect.Method;
 

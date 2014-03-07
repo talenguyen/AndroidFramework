@@ -1,12 +1,13 @@
 package com.tale.AndroidFrameworkLab;
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import com.talenguyen.androidframework.module.module.fragment.NavigationFragmentActivity;
-import com.talenguyen.androidframework.module.module.fragment.NavigationViewPager;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+
+import com.talenguyen.androidframework.module.fragment.NavigationFragmentActivity;
+import com.talenguyen.androidframework.module.fragment.NavigationViewPager;
 
 public class MyActivity extends NavigationFragmentActivity {
 

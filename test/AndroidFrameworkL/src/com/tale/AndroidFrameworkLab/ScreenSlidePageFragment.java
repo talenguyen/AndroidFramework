@@ -16,6 +16,8 @@
 
 package com.tale.AndroidFrameworkLab;
 
+import com.talenguyen.androidframework.module.fragment.NavigationFragmentActivity;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -38,6 +40,7 @@ public class ScreenSlidePageFragment extends Fragment {
 
     /**
      * The fragment's page number, which is set to the argument value for {@link #ARG_PAGE}.
+     * 
      */
     private int mPageNumber = 0;
 
@@ -80,7 +83,7 @@ public class ScreenSlidePageFragment extends Fragment {
                 Bundle args = new Bundle();
                 args.putInt(ARG_PAGE, mPageNumber + 1);
 
-                ((Na) getActivity()).setCurrentPage(mPageNumber + 1, args);
+                ((NavigationFragmentActivity) getActivity()).setCurrentPage(mPageNumber + 1, args);
             }
         });
         return rootView;

@@ -1,4 +1,4 @@
-package com.talenguyen.androidframework.module.module.fragment;
+package com.talenguyen.androidframework.module.fragment;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
