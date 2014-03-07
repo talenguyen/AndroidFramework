@@ -10,7 +10,7 @@ import java.util.List;
  * Date: 12/22/13
  * Time: 12:24 AM
  */
-public class ClassParser {
+class ClassParser {
 
     List<MethodParser> methods;
     String[] getterFields;

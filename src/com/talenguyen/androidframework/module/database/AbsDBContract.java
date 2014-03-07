@@ -6,7 +6,7 @@ package com.talenguyen.androidframework.module.database;
  * Date: 12/22/13
  * Time: 11:22 AM
  */
-public abstract class AbsDBContract {
+public interface AbsDBContract {
 
     /**
      * Get array of database tables in Class.

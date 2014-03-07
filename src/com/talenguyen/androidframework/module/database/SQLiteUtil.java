@@ -31,7 +31,7 @@ public class SQLiteUtil {
      * @param item The item to insert
      * @return the row ID of the newly inserted row, or -1 if an error occurred
      */
-    public static long insert(Object item) {
+    public static long insert(AbsDBColumn item) {
         // Verify pre-define.
         verify();
         // Gets the data repository in write mode
@@ -51,7 +51,7 @@ public class SQLiteUtil {
      * @param whereArgs  You may include ?s in the where clause, which will be replaced by the values from whereArgs. The values will be bound as Strings.
      * @return the number of rows affected
      */
-    public static int update(Class table, ContentValues values, String whereClause, String[] whereArgs) {
+    public static int update(Class<? extends AbsDBColumn> table, ContentValues values, String whereClause, String[] whereArgs) {
         // Verify pre-define.
         verify();
 
@@ -68,7 +68,7 @@ public class SQLiteUtil {
      * @param whereArgs You may include ?s in the where clause, which will be replaced by the values from whereArgs. The values will be bound as Strings.
      * @return the number of rows affected
      */
-    public static int delete(Class table, String whereClause, String[] whereArgs) {
+    public static int delete(Class<? extends AbsDBColumn> table, String whereClause, String[] whereArgs) {
         verify();
 
         final SQLiteDatabase db = mSqLiteOpenHelperEx.getWritableDatabase();
@@ -88,7 +88,7 @@ public class SQLiteUtil {
      * @param limit  Limits the number of rows returned by the query, formatted as LIMIT clause. Passing null denotes no LIMIT clause.
      * @return A Cursor object, which is positioned before the first entry. Note that Cursors are not synchronized, see the documentation for more details.
      */
-    public static Cursor query(Class table, boolean distinct, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
+    public static Cursor query(Class<? extends AbsDBColumn> table, boolean distinct, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
         verify();
 
         final SQLiteDatabase db = mSqLiteOpenHelperEx.getReadableDatabase();
@@ -123,7 +123,7 @@ public class SQLiteUtil {
      * @param limit  Limits the number of rows returned by the query, formatted as LIMIT clause. Passing null denotes no LIMIT clause.
      * @return A list of <T> objects.
      */
-    public static <T> List<T> queryObjects(Class<? extends T> table, boolean distinct, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
+    public static List<AbsDBColumn> queryObjects(Class<? extends AbsDBColumn> table, boolean distinct, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
 
         final Cursor cursor = query(table, distinct, selection, selectionArgs, groupBy, having, orderBy, limit);
 
@@ -137,21 +137,21 @@ public class SQLiteUtil {
      * @param selectionArgs You may include ?s in where clause in the query, which will be replaced by the values from selectionArgs. The values will be bound as Strings.
      * @return A list of <T> objects.
      */
-    public static <T> List<T> rawQueryObjects(Class<? extends T> table, String sql, String[] selectionArgs) {
+    public static List<AbsDBColumn> rawQueryObjects(Class<? extends AbsDBColumn> table, String sql, String[] selectionArgs) {
         final Cursor cursor = rawQuery(sql, selectionArgs);
 
         return parseCursor(table, cursor);
     }
 
-    private static <T> List<T> parseCursor(Class<? extends T> table, Cursor cursor) {
+    private static List<AbsDBColumn> parseCursor(Class<? extends AbsDBColumn> table, Cursor cursor) {
         if (cursor == null || !cursor.moveToFirst()) {
             return null;
         }
 
         final int size = cursor.getCount();
-        final List<T> result = new ArrayList<T>(size);
+        final List<AbsDBColumn> result = new ArrayList<AbsDBColumn>(size);
         do {
-            final T item = SQLiteHelper.fromCursor(cursor, table);
+            final AbsDBColumn item = SQLiteHelper.fromCursor(cursor, table);
             if (item != null) {
                 result.add(item);
             }

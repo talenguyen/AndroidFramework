@@ -9,7 +9,7 @@ import android.database.Cursor;
  * Date: 12/22/13
  * Time: 12:29 AM
  */
-public class SQLiteHelper {
+class SQLiteHelper {
 
     private static final String TAG = SQLiteHelper.class.getSimpleName();
 

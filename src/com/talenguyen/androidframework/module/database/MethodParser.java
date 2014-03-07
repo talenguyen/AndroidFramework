@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  * Date: 12/22/13
  * Time: 12:19 AM
  */
-public class MethodParser {
+class MethodParser {
     String getterName;
     String returnType;
 
