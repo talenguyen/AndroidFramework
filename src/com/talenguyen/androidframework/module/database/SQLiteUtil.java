@@ -28,10 +28,11 @@ public class SQLiteUtil {
 
     /**
      * Convenience method for inserting a row into the database.
+     *
      * @param item The item to insert
      * @return the row ID of the newly inserted row, or -1 if an error occurred
      */
-    public static long insert(AbsDBColumn item) {
+    public static long insert(ITable item) {
         // Verify pre-define.
         verify();
         // Gets the data repository in write mode
@@ -46,12 +47,13 @@ public class SQLiteUtil {
 
     /**
      * Convenience method for updating rows in the database.
-     * @param values a map from column names to new column values. null is a valid value that will be translated to NULL.
-     * @param whereClause  the optional WHERE clause to apply when updating. Passing null will update all rows.
-     * @param whereArgs  You may include ?s in the where clause, which will be replaced by the values from whereArgs. The values will be bound as Strings.
+     *
+     * @param values      a map from column names to new column values. null is a valid value that will be translated to NULL.
+     * @param whereClause the optional WHERE clause to apply when updating. Passing null will update all rows.
+     * @param whereArgs   You may include ?s in the where clause, which will be replaced by the values from whereArgs. The values will be bound as Strings.
      * @return the number of rows affected
      */
-    public static int update(Class<? extends AbsDBColumn> table, ContentValues values, String whereClause, String[] whereArgs) {
+    public static int update(Class<? extends ITable> table, ContentValues values, String whereClause, String[] whereArgs) {
         // Verify pre-define.
         verify();
 
@@ -62,13 +64,12 @@ public class SQLiteUtil {
     }
 
     /**
-     *
-     * @param table  the table to delete from
+     * @param table       the table to delete from
      * @param whereClause the optional WHERE clause to apply when deleting. Passing null will delete all rows.
-     * @param whereArgs You may include ?s in the where clause, which will be replaced by the values from whereArgs. The values will be bound as Strings.
+     * @param whereArgs   You may include ?s in the where clause, which will be replaced by the values from whereArgs. The values will be bound as Strings.
      * @return the number of rows affected
      */
-    public static int delete(Class<? extends AbsDBColumn> table, String whereClause, String[] whereArgs) {
+    public static int delete(Class<? extends ITable> table, String whereClause, String[] whereArgs) {
         verify();
 
         final SQLiteDatabase db = mSqLiteOpenHelperEx.getWritableDatabase();
@@ -78,17 +79,18 @@ public class SQLiteUtil {
 
     /**
      * Query the given URL, returning a Cursor over the result set.
-     * @param table The table name to compile the query against.
-     * @param distinct true if you want each row to be unique, false otherwise.
-     * @param selection A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself). Passing null will return all rows for the given table.
+     *
+     * @param table         The table name to compile the query against.
+     * @param distinct      true if you want each row to be unique, false otherwise.
+     * @param selection     A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself). Passing null will return all rows for the given table.
      * @param selectionArgs You may include ?s in selection, which will be replaced by the values from selectionArgs, in order that they appear in the selection. The values will be bound as Strings.
-     * @param groupBy A filter declaring how to group rows, formatted as an SQL GROUP BY clause (excluding the GROUP BY itself). Passing null will cause the rows to not be grouped.
-     * @param having A filter declare which row groups to include in the cursor, if row grouping is being used, formatted as an SQL HAVING clause (excluding the HAVING itself). Passing null will cause all row groups to be included, and is required when row grouping is not being used.
-     * @param orderBy How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY itself). Passing null will use the default sort order, which may be unordered.
-     * @param limit  Limits the number of rows returned by the query, formatted as LIMIT clause. Passing null denotes no LIMIT clause.
+     * @param groupBy       A filter declaring how to group rows, formatted as an SQL GROUP BY clause (excluding the GROUP BY itself). Passing null will cause the rows to not be grouped.
+     * @param having        A filter declare which row groups to include in the cursor, if row grouping is being used, formatted as an SQL HAVING clause (excluding the HAVING itself). Passing null will cause all row groups to be included, and is required when row grouping is not being used.
+     * @param orderBy       How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY itself). Passing null will use the default sort order, which may be unordered.
+     * @param limit         Limits the number of rows returned by the query, formatted as LIMIT clause. Passing null denotes no LIMIT clause.
      * @return A Cursor object, which is positioned before the first entry. Note that Cursors are not synchronized, see the documentation for more details.
      */
-    public static Cursor query(Class<? extends AbsDBColumn> table, boolean distinct, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
+    public static Cursor query(Class<? extends ITable> table, boolean distinct, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
         verify();
 
         final SQLiteDatabase db = mSqLiteOpenHelperEx.getReadableDatabase();
@@ -98,8 +100,21 @@ public class SQLiteUtil {
     }
 
     /**
+     * Query the given URL, returning a Cursor over the result set.
+     *
+     * @param table         The table name to compile the query against.
+     * @param selection     A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself). Passing null will return all rows for the given table.
+     * @param selectionArgs You may include ?s in selection, which will be replaced by the values from selectionArgs, in order that they appear in the selection. The values will be bound as Strings.
+     * @return A Cursor object, which is positioned before the first entry. Note that Cursors are not synchronized, see the documentation for more details.
+     */
+    public static Cursor quickQuery(Class<? extends ITable> table, String selection, String[] selectionArgs) {
+        return query(table, false, selection, selectionArgs, null, null, "_id asd", null);
+    }
+
+    /**
      * Runs the provided SQL and returns a Cursor over the result set.
-     * @param sql the SQL query. The SQL string must not be ; terminated
+     *
+     * @param sql           the SQL query. The SQL string must not be ; terminated
      * @param selectionArgs You may include ?s in where clause in the query, which will be replaced by the values from selectionArgs. The values will be bound as Strings.
      * @return A Cursor object, which is positioned before the first entry. Note that Cursors are not synchronized, see the documentation for more details.
      */
@@ -112,18 +127,19 @@ public class SQLiteUtil {
     }
 
     /**
-     * Query the given URL, returning a list of <T> objects.
-     * @param table The table name to compile the query against.
-     * @param distinct true if you want each row to be unique, false otherwise.
-     * @param selection A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself). Passing null will return all rows for the given table.
+     * Query the given URL, returning a list of <ITable> objects.
+     *
+     * @param table         The table name to compile the query against.
+     * @param distinct      true if you want each row to be unique, false otherwise.
+     * @param selection     A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself). Passing null will return all rows for the given table.
      * @param selectionArgs You may include ?s in selection, which will be replaced by the values from selectionArgs, in order that they appear in the selection. The values will be bound as Strings.
-     * @param groupBy A filter declaring how to group rows, formatted as an SQL GROUP BY clause (excluding the GROUP BY itself). Passing null will cause the rows to not be grouped.
-     * @param having A filter declare which row groups to include in the cursor, if row grouping is being used, formatted as an SQL HAVING clause (excluding the HAVING itself). Passing null will cause all row groups to be included, and is required when row grouping is not being used.
-     * @param orderBy How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY itself). Passing null will use the default sort order, which may be unordered.
-     * @param limit  Limits the number of rows returned by the query, formatted as LIMIT clause. Passing null denotes no LIMIT clause.
-     * @return A list of <T> objects.
+     * @param groupBy       A filter declaring how to group rows, formatted as an SQL GROUP BY clause (excluding the GROUP BY itself). Passing null will cause the rows to not be grouped.
+     * @param having        A filter declare which row groups to include in the cursor, if row grouping is being used, formatted as an SQL HAVING clause (excluding the HAVING itself). Passing null will cause all row groups to be included, and is required when row grouping is not being used.
+     * @param orderBy       How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY itself). Passing null will use the default sort order, which may be unordered.
+     * @param limit         Limits the number of rows returned by the query, formatted as LIMIT clause. Passing null denotes no LIMIT clause.
+     * @return A list of <ITable> objects.
      */
-    public static List<AbsDBColumn> queryObjects(Class<? extends AbsDBColumn> table, boolean distinct, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
+    public static List<? extends ITable> queryObjects(Class<? extends ITable> table, boolean distinct, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit) {
 
         final Cursor cursor = query(table, distinct, selection, selectionArgs, groupBy, having, orderBy, limit);
 
@@ -131,27 +147,40 @@ public class SQLiteUtil {
     }
 
     /**
-     * Runs the provided SQL and returns a list of T objects.
-     * @param table The table name to compile the query against.
-     * @param sql the SQL query. The SQL string must not be ; terminated
-     * @param selectionArgs You may include ?s in where clause in the query, which will be replaced by the values from selectionArgs. The values will be bound as Strings.
-     * @return A list of <T> objects.
+     * Query the given URL, returning a list of <ITable> objects.
+     *
+     * @param table         The table name to compile the query against.
+     * @param selection     A filter declaring which rows to return, formatted as an SQL WHERE clause (excluding the WHERE itself). Passing null will return all rows for the given table.
+     * @param selectionArgs You may include ?s in selection, which will be replaced by the values from selectionArgs, in order that they appear in the selection. The values will be bound as Strings.
+     * @return A list of <? extends ITable> objects.
      */
-    public static List<AbsDBColumn> rawQueryObjects(Class<? extends AbsDBColumn> table, String sql, String[] selectionArgs) {
+    public static List<? extends ITable> quickQueryObjects(Class<? extends ITable> table, String selection, String[] selectionArgs) {
+        return queryObjects(table, false, selection, selectionArgs, null, null, "_id asc", null);
+    }
+
+    /**
+     * Runs the provided SQL and returns a list of T objects.
+     *
+     * @param table         The table name to compile the query against.
+     * @param sql           the SQL query. The SQL string must not be ; terminated
+     * @param selectionArgs You may include ?s in where clause in the query, which will be replaced by the values from selectionArgs. The values will be bound as Strings.
+     * @return A list of <ITable> objects.
+     */
+    public static List<? extends ITable> rawQueryObjects(Class<? extends ITable> table, String sql, String[] selectionArgs) {
         final Cursor cursor = rawQuery(sql, selectionArgs);
 
         return parseCursor(table, cursor);
     }
 
-    private static List<AbsDBColumn> parseCursor(Class<? extends AbsDBColumn> table, Cursor cursor) {
+    private static List<? extends ITable> parseCursor(Class<? extends ITable> table, Cursor cursor) {
         if (cursor == null || !cursor.moveToFirst()) {
             return null;
         }
 
         final int size = cursor.getCount();
-        final List<AbsDBColumn> result = new ArrayList<AbsDBColumn>(size);
+        final List<ITable> result = new ArrayList<ITable>(size);
         do {
-            final AbsDBColumn item = SQLiteHelper.fromCursor(cursor, table);
+            final ITable item = SQLiteHelper.fromCursor(cursor, table);
             if (item != null) {
                 result.add(item);
             }

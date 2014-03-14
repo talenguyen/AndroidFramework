@@ -10,18 +10,21 @@ public interface DBContract {
 
     /**
      * Get array of database tables in Class.
+     *
      * @return array of Class present for database table.
      */
     public abstract Class[] getTableClasses();
 
     /**
      * Get version of database
+     *
      * @return Version of database
      */
     public abstract int getDBVersion();
 
     /**
      * Get name of database
+     *
      * @return Name of database
      */
     public abstract String getDBName();

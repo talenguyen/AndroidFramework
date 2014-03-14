@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
  */
 class MethodParser {
     String getterName;
+    String getterMethod;
     String returnType;
 
     public static MethodParser parse(Method method) {
@@ -17,16 +18,27 @@ class MethodParser {
             return null;
         }
         final String name = method.getName();
-        if (name.startsWith("get") && !name.equals("getClass")) {
-            final String getName = name.substring(3);
-            return new MethodParser(getName, method.getReturnType().getName());
+        int index = -1;
+        if (!name.equals("getClass")) {
+            if (name.startsWith("get")) {
+                // for getter e.g. getA().
+                index = 3;
+            } else if (name.startsWith("is")) {
+                // for boolean getter e.g. isX().
+                index = 2;
+            }
+        }
+        if (index != -1) {
+            final String getName = name.substring(index);
+            return new MethodParser(getName, name, method.getReturnType().getName());
         }
 
         return null;
     }
 
-    public MethodParser(String getterName, String returnType) {
+    public MethodParser(String getterName, String getterMethod, String returnType) {
         this.getterName = getterName;
+        this.getterMethod = getterMethod;
         this.returnType = returnType;
     }
 }

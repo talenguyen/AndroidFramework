@@ -144,7 +144,7 @@ class SQLiteHelper {
     }
 
     private static String mapToSQLiteType(String type) {
-        if (type.equals("int") || type.equals("java.lang.Integer")|| type.equals("long") || type.equals("java.lang.Long")) {
+        if (type.equals("int") || type.equals("java.lang.Integer") || type.equals("long") || type.equals("java.lang.Long")) {
             return "INTEGER";
         } else if (type.equals("float") || type.equals("java.lang.Float") || type.equals("double")) {
             return "REAL";
