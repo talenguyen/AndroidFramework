@@ -1,13 +1,13 @@
 package com.talenguyen.androidframework.module.database;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,6 +43,30 @@ public class SQLiteUtil {
 
         // Insert the new row, returning the primary key value of the new row
         return db.insert(item.getClass().getSimpleName(), null, values);
+    }
+
+    /**
+     * Convenience method for updating rows in the database.
+     *
+     * @param item the item to be updated.
+     * @return the number of rows affected
+     */
+    public static int update(ITable item) {
+        final ContentValues values = SQLiteHelper.buildContentValue(item);
+
+        return update(item.getClass(), values, "_id LIKE ?",
+                new String[]{String.valueOf(item.get_id())});
+    }
+
+    /**
+     * Convenience method for delete rows in the database.
+     *
+     * @param item the item to be deleted.
+     * @return the number of rows affected
+     */
+    public static int delete(ITable item) {
+        return delete(item.getClass(), "_id LIKE ?",
+                new String[]{String.valueOf(item.get_id())});
     }
 
     /**

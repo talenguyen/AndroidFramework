@@ -9,3 +9,7 @@
 /proguard-project.txt
 /project.properties
 /test/AnimationsDemo/gen
+.settings
+assets
+*.classpath
+*.project
