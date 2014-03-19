@@ -61,7 +61,17 @@ class SQLiteHelper {
             if (methodParser.getterName.equals("_id")) {
                 continue;
             }
-            final Object resultData = ReflectionUtil.involveMethod(item, "get" + methodParser.getterName);
+            Object resultData;
+            if (methodParser.returnType.toLowerCase().contains("boolean")) {
+                resultData = ReflectionUtil.involveMethod(item, "is" + methodParser.getterName);
+                if (resultData.toString().equals("true")) {
+                    resultData = 1;
+                } else {
+                    resultData = 0;
+                }
+            } else {
+                resultData = ReflectionUtil.involveMethod(item, "get" + methodParser.getterName);
+            }
             if (resultData == null) {
                 continue;
             }
@@ -87,46 +97,15 @@ class SQLiteHelper {
                     continue;
                 }
                 final Object value = ReflectionUtil.involveMethod(cursor, getterMethod, index);
-                ReflectionUtil.involveMethod(item, "set" + methodParser.getterName, value);
+                if (methodParser.returnType.toLowerCase().contains("boolean")) {
+                    ReflectionUtil.involveMethod(item, "set" + methodParser.getterName, Integer.valueOf(value.toString()) == 0 ? false : true );
+                } else {
+                    ReflectionUtil.involveMethod(item, "set" + methodParser.getterName, value);
+                }
             }
         }
         return item;
     }
-
-    private static String getCursorGetterMethod(String returnType) {
-        if (returnType.toLowerCase().contains("int")) {
-            return "getInt";
-        } else if (returnType.toLowerCase().contains("long")) {
-            return "getLong";
-        } else if (returnType.toLowerCase().contains("float")) {
-            return "getFloat";
-        } else if (returnType.toLowerCase().contains("string")) {
-            return "getString";
-        }
-
-        return null;
-    }
-
-//    private static boolean isIgnoreValue(Object value) {
-//        if (Integer.MIN_VALUE == Integer.parseInt(value); || Long.MIN_VALUE == value|| Float.MIN_VALUE == value || Double.MIN_VALUE == value) {
-//            return true;
-//        }
-//        return false;
-//    }
-
-//    public static <T> T fromCursor(Cursor cursor, Class<? extends T> clazz) {
-//        if (cursor == null) {
-//            return null;
-//        }
-//
-//        try {
-//            T result = clazz.newInstance();
-//        } catch (InstantiationException e) {
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private static String buildColumnDeclareStatement(MethodParser method) {
         final String sqliteType = mapToSQLiteType(method.returnType);
@@ -143,13 +122,28 @@ class SQLiteHelper {
         return null;
     }
 
+
+    private static String getCursorGetterMethod(String returnType) {
+        if (returnType.toLowerCase().contains("int") || returnType.toLowerCase().contains("boolean")) {
+            return "getInt";
+        } else if (returnType.toLowerCase().contains("long")) {
+            return "getLong";
+        } else if (returnType.toLowerCase().contains("float")) {
+            return "getFloat";
+        } else if (returnType.toLowerCase().contains("double")) {
+            return "getDouble";
+        } else if (returnType.toLowerCase().contains("string")) {
+            return "getString";
+        }
+
+        return null;
+    }
+
     private static String mapToSQLiteType(String type) {
-        if (type.equals("int") || type.equals("java.lang.Integer") || type.equals("long") || type.equals("java.lang.Long")) {
+        if (type.toLowerCase().contains("int") || type.toLowerCase().contains("long") || type.toLowerCase().contains("boolean")) {
             return "INTEGER";
         } else if (type.equals("float") || type.equals("java.lang.Float") || type.equals("double")) {
             return "REAL";
-        } else if (type.equals("boolean") || type.equals("java.lang.Boolean")) {
-            return "BOOL";
         } else if (type.equals("java.lang.String")) {
             return "TEXT";
         }

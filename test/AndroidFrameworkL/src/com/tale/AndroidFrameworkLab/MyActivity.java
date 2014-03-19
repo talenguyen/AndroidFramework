@@ -14,11 +14,11 @@ public class MyActivity extends NavigationFragmentActivity {
     private static final List<Class<? extends Fragment>> pages;
     static {
         pages = new ArrayList<Class<? extends Fragment>>();
-        pages.add(ScreenSlidePageFragment.class);
-        pages.add(ScreenSlidePageFragment.class);
-        pages.add(ScreenSlidePageFragment.class);
-        pages.add(ScreenSlidePageFragment.class);
-        pages.add(ScreenSlidePageFragment.class);
+        pages.add(PageFragment.class);
+        pages.add(Page1Fragment.class);
+        pages.add(Page2Fragment.class);
+        pages.add(Page3Fragment.class);
+        pages.add(Page4Fragment.class);
     }
     /**
      * Called when the activity is first created.
@@ -29,7 +29,7 @@ public class MyActivity extends NavigationFragmentActivity {
         setContentView(R.layout.main);
 
         NavigationViewPager viewPager = (NavigationViewPager) findViewById(R.id.viewpager);
-        viewPager.setSwipingEnabled(false);
+        viewPager.setSwipingEnabled(true);
         configNavigation(viewPager, pages);
     }
 

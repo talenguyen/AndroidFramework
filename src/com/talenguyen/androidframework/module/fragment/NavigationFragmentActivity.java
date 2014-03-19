@@ -1,16 +1,18 @@
 package com.talenguyen.androidframework.module.fragment;
 
-import android.os.Bundle;
-import android.support.v4.app.*;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import com.talenguyen.androidframework.utils.ReflectionUtil;
 
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Giang on 3/6/14.
- *
+ * <p/>
  * To use single Activity and multiple Fragment you should use this activity. For the fragment container we will use
  * ViewPager and call setViewPager() in very first place. We recommend onCreate().
  */
@@ -21,6 +23,7 @@ public class NavigationFragmentActivity extends FragmentActivity {
 
     /**
      * Get the id of the fragment container. Where every child fragment can attach to.
+     *
      * @return The resource id of the Fragment container.
      */
     public int getFragmentContainerId() {
@@ -29,15 +32,32 @@ public class NavigationFragmentActivity extends FragmentActivity {
 
     /**
      * Configure navigation pages.
+     *
      * @param viewPager The ViewPager object which will be a FragmentContainer where the Fragment will be placed.
-     * @param pageList The list of pages to be navigate.
+     * @param pageList  The list of pages to be navigate.
      */
     public void configNavigation(NavigationViewPager viewPager, List<Class<? extends Fragment>> pageList) {
         if (viewPager == null) {
             throw new NullPointerException("ViewPager must not be null");
         }
-        mViewPager = viewPager;
         mAdapter = new NavigationFragmentAdapter(getSupportFragmentManager());
+        mViewPager = viewPager;
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
         mViewPager.setAdapter(mAdapter);
         if (pageList != null) {
             mAdapter.setClassFragmentList(pageList);
@@ -47,16 +67,17 @@ public class NavigationFragmentActivity extends FragmentActivity {
 
     /**
      * Open a page specific to position.
+     *
      * @param position The position of page target.
      */
-    public void setCurrentPage(int position, Bundle args) {
-        mAdapter.setArgs(position, args);
+    public void setCurrentPage(int position) {
         mViewPager.setCurrentItem(position);
     }
 
     /**
      * Open a page specific to position.
-     * @param position The position of page target.
+     *
+     * @param position     The position of page target.
      * @param smoothScroll enable animation.
      */
     public void setCurrentPage(int position, boolean smoothScroll) {
@@ -82,8 +103,9 @@ public class NavigationFragmentActivity extends FragmentActivity {
 
     private static class NavigationFragmentAdapter extends FragmentStatePagerAdapter {
 
+        private static final String TAG = NavigationFragmentAdapter.class.getSimpleName();
+
         private List<Class<? extends Fragment>> classFragmentList;
-        private Map<Integer, Bundle> argList;
 
         public NavigationFragmentAdapter(FragmentManager fm) {
             super(fm);
@@ -99,25 +121,7 @@ public class NavigationFragmentActivity extends FragmentActivity {
         @Override
         public Fragment getItem(int i) {
             final Class<? extends Fragment> classFragment = classFragmentList.get(i);
-            final Fragment fragment = ReflectionUtil.newInstance(classFragment);
-            if (argList != null) {
-                final Bundle args = argList.get(i);
-                if (args != null) {
-                    fragment.setArguments(args);
-                }
-            }
-            return fragment;
-        }
-
-        public void setArgs(int position, Bundle args) {
-            if (args == null) {
-                return;
-            }
-
-            if (argList == null) {
-                argList = new Hashtable<Integer, Bundle>();
-            }
-            argList.put(position, args);
+            return ReflectionUtil.newInstance(classFragment);
         }
 
         @Override

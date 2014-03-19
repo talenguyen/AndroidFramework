@@ -17,20 +17,20 @@ class MethodParser {
         if (method == null) {
             return null;
         }
-        final String name = method.getName();
+        final String methodName = method.getName();
         int index = -1;
-        if (!name.equals("getClass")) {
-            if (name.startsWith("get")) {
+        if (!methodName.equals("getClass")) {
+            if (methodName.startsWith("get")) {
                 // for getter e.g. getA().
                 index = 3;
-            } else if (name.startsWith("is")) {
+            } else if (methodName.startsWith("is")) {
                 // for boolean getter e.g. isX().
                 index = 2;
             }
         }
         if (index != -1) {
-            final String getName = name.substring(index);
-            return new MethodParser(getName, name, method.getReturnType().getName());
+            final String getterName = methodName.substring(index);
+            return new MethodParser(getterName, methodName, method.getReturnType().getName());
         }
 
         return null;

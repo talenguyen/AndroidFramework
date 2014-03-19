@@ -41,7 +41,7 @@ public class NavigationViewPager extends ViewPager {
     public void setSwipingEnabled(boolean enabled) {
         this.swipingEnabled = enabled;
         if (swipingEnabled) {
-            setOffscreenPageLimit(3);
+            setOffscreenPageLimit(2);
         } else {
             setOffscreenPageLimit(1);
         }
