@@ -12,9 +12,9 @@ public class BaseFrag extends Fragment {
 
     public String TAG;
 
+    // Required empty public constructor
     public BaseFrag() {
-        // Required empty public constructor
-        TAG = getClass().getSimpleName();
+        TAG = this.getClass().getSimpleName();
     }
 
     @Override
