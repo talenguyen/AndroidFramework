@@ -13,7 +13,7 @@ public interface DBContract {
      *
      * @return array of Class present for database table.
      */
-    public abstract Class[] getTableClasses();
+    public abstract Class<? extends ITable>[] getTableClasses();
 
     /**
      * Get version of database

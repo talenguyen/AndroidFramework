@@ -11,8 +11,6 @@ import android.database.Cursor;
  */
 class SQLiteHelper {
 
-    private static final String TAG = SQLiteHelper.class.getSimpleName();
-
     public static String buildCreateTableStatement(Class<?> clazz) {
         final ClassParser classParser = ClassParser.parse(clazz);
         if (classParser == null || classParser.methods == null || classParser.methods.size() == 0) {

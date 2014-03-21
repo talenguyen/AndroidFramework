@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Created with IntelliJ IDEA.
@@ -216,45 +215,6 @@ public class SQLiteUtil {
     private static void verify() {
         if (mSqLiteOpenHelperEx == null) {
             throw new NullPointerException("Call init(Context context, DBContract contract) first");
-        }
-    }
-
-    private static class SQLiteOpenHelperEx extends SQLiteOpenHelper {
-
-        private DBContract contract;
-
-        public SQLiteOpenHelperEx(Context context, DBContract contract) {
-            super(context, contract.getDBName(), null, contract.getDBVersion());
-            this.contract = contract;
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase sqLiteDatabase) {
-            final Class[] tables = contract.getTableClasses();
-            if (tables == null || tables.length == 0) {
-                return;
-            }
-
-            for (int i = 0; i < tables.length; i++) {
-                final Class table = tables[i];
-                final String createStatement = SQLiteHelper.buildCreateTableStatement(table);
-                sqLiteDatabase.execSQL(createStatement);
-            }
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-            final Class[] tables = contract.getTableClasses();
-            if (tables == null || tables.length == 0) {
-                return;
-            }
-
-            for (int i = 0; i < tables.length; i++) {
-                final Class table = tables[i];
-                final String deleteStatement = SQLiteHelper.buildDeleteTableStatement(table);
-                sqLiteDatabase.execSQL(deleteStatement);
-            }
-            onCreate(sqLiteDatabase);
         }
     }
 
