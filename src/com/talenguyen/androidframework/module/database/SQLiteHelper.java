@@ -9,7 +9,7 @@ import android.database.Cursor;
  * Date: 12/22/13
  * Time: 12:29 AM
  */
-class SQLiteHelper {
+public class SQLiteHelper {
 
     public static String buildCreateTableStatement(Class<?> clazz) {
         final ClassParser classParser = ClassParser.parse(clazz);
