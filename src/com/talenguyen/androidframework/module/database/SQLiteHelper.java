@@ -1,5 +1,7 @@
 package com.talenguyen.androidframework.module.database;
 
+import java.util.Locale;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 
@@ -11,7 +13,9 @@ import android.database.Cursor;
  */
 public class SQLiteHelper {
 
-    public static String buildCreateTableStatement(Class<?> clazz) {
+    private static final Locale DEFAULT_LOCALE = Locale.getDefault();
+
+	public static String buildCreateTableStatement(Class<?> clazz) {
         final ClassParser classParser = ClassParser.parse(clazz);
         if (classParser == null || classParser.methods == null || classParser.methods.size() == 0) {
             return null;
@@ -60,7 +64,7 @@ public class SQLiteHelper {
                 continue;
             }
             Object resultData;
-            if (methodParser.returnType.toLowerCase().contains("boolean")) {
+            if (methodParser.returnType.toLowerCase(DEFAULT_LOCALE).contains("boolean")) {
                 resultData = ReflectionUtil.involveMethod(item, "is" + methodParser.getterName);
                 if (resultData.toString().equals("true")) {
                     resultData = 1;
@@ -95,7 +99,7 @@ public class SQLiteHelper {
                     continue;
                 }
                 final Object value = ReflectionUtil.involveMethod(cursor, getterMethod, index);
-                if (methodParser.returnType.toLowerCase().contains("boolean")) {
+                if (methodParser.returnType.toLowerCase(DEFAULT_LOCALE).contains("boolean")) {
                     ReflectionUtil.involveMethod(item, "set" + methodParser.getterName, Integer.valueOf(value.toString()) == 0 ? false : true );
                 } else {
                     ReflectionUtil.involveMethod(item, "set" + methodParser.getterName, value);
@@ -122,15 +126,15 @@ public class SQLiteHelper {
 
 
     private static String getCursorGetterMethod(String returnType) {
-        if (returnType.toLowerCase().contains("int") || returnType.toLowerCase().contains("boolean")) {
+        if (returnType.toLowerCase(DEFAULT_LOCALE).contains("int") || returnType.toLowerCase(DEFAULT_LOCALE).contains("boolean")) {
             return "getInt";
-        } else if (returnType.toLowerCase().contains("long")) {
+        } else if (returnType.toLowerCase(DEFAULT_LOCALE).contains("long")) {
             return "getLong";
-        } else if (returnType.toLowerCase().contains("float")) {
+        } else if (returnType.toLowerCase(DEFAULT_LOCALE).contains("float")) {
             return "getFloat";
-        } else if (returnType.toLowerCase().contains("double")) {
+        } else if (returnType.toLowerCase(DEFAULT_LOCALE).contains("double")) {
             return "getDouble";
-        } else if (returnType.toLowerCase().contains("string")) {
+        } else if (returnType.toLowerCase(DEFAULT_LOCALE).contains("string")) {
             return "getString";
         }
 
@@ -138,7 +142,7 @@ public class SQLiteHelper {
     }
 
     private static String mapToSQLiteType(String type) {
-        if (type.toLowerCase().contains("int") || type.toLowerCase().contains("long") || type.toLowerCase().contains("boolean")) {
+        if (type.toLowerCase(DEFAULT_LOCALE).contains("int") || type.toLowerCase(DEFAULT_LOCALE).contains("long") || type.toLowerCase(DEFAULT_LOCALE).contains("boolean")) {
             return "INTEGER";
         } else if (type.equals("float") || type.equals("java.lang.Float") || type.equals("double")) {
             return "REAL";

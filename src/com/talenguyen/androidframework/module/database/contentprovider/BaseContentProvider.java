@@ -17,7 +17,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-public abstract class ContentProviderEx extends ContentProvider {
+public abstract class BaseContentProvider extends ContentProvider {
 
 	private SQLiteOpenHelper mSQLiteOpenHelper;
 	private UriMatcher mUriMatcher;
