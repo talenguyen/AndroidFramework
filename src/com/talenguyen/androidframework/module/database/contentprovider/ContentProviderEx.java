@@ -1,5 +1,7 @@
 package com.talenguyen.androidframework.module.database.contentprovider;
 
+import java.util.List;
+
 import com.talenguyen.androidframework.module.database.DBContract;
 import com.talenguyen.androidframework.module.database.ITable;
 import com.talenguyen.androidframework.module.database.SQLiteOpenHelperEx;
@@ -19,7 +21,7 @@ public abstract class ContentProviderEx extends ContentProvider {
 
 	private SQLiteOpenHelper mSQLiteOpenHelper;
 	private UriMatcher mUriMatcher;
-	private Class<? extends ITable>[] mTables;
+	private List<Class<? extends ITable>> mTables;
 	
 
 	@Override
@@ -33,12 +35,16 @@ public abstract class ContentProviderEx extends ContentProvider {
 		
 		mTables = dbContract.getTableClasses();
 		
+		if (mTables == null) {
+			throw new NullPointerException("List<ITable> can not be null");
+		}
+		
 		final String authority = getAuthority();
 		
 		mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		
-		for (int i = 0; i < mTables.length; i++) {
-			final Class<?> table = mTables[i];
+		for (int i = 0, count = mTables.size(); i < count; i++) {
+			final Class<?> table = mTables.get(i);
 			mUriMatcher.addURI(authority, table.getSimpleName(), i);
 			mUriMatcher.addURI(authority, table.getSimpleName() + "/#", i);
 		}
@@ -65,7 +71,7 @@ public abstract class ContentProviderEx extends ContentProvider {
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		
-		final String table = mTables[matchedIndex].getSimpleName();
+		final String table = mTables.get(matchedIndex).getSimpleName();
 		
 		// Opens the database object in "write" mode.
 		final SQLiteDatabase db = mSQLiteOpenHelper.getWritableDatabase();
@@ -105,7 +111,7 @@ public abstract class ContentProviderEx extends ContentProvider {
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		
-		final String table = mTables[matchedIndex].getSimpleName();
+		final String table = mTables.get(matchedIndex).getSimpleName();
 		
 		// Opens the database object in "write" mode.
 		final SQLiteDatabase db = mSQLiteOpenHelper.getWritableDatabase();
@@ -136,14 +142,14 @@ public abstract class ContentProviderEx extends ContentProvider {
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		
-		final String table = mTables[matchedIndex].getSimpleName();
+		final String table = mTables.get(matchedIndex).getSimpleName();
 		
 		final long id = ContentUris.parseId(uri);
 		 
 		// Constructs a new query builder and sets its table name
 		final SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 		qb.setTables(table);
-		if (id != UriMatched.UNKNOW_ID) {
+		if (id != -1) {
 			/*
 			 * If the incoming URI is for a single item identified by its ID,
 			 * chooses the item ID projection, and appends "_ID = <id>" to the
@@ -180,7 +186,7 @@ public abstract class ContentProviderEx extends ContentProvider {
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		
-		final String table = mTables[matchedIndex].getSimpleName();
+		final String table = mTables.get(matchedIndex).getSimpleName();
 		
 		// Opens the database object in "write" mode.
 		final SQLiteDatabase db = mSQLiteOpenHelper.getWritableDatabase();

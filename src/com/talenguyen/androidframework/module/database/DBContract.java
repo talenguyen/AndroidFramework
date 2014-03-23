@@ -1,5 +1,7 @@
 package com.talenguyen.androidframework.module.database;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: GIANG
@@ -13,7 +15,7 @@ public interface DBContract {
      *
      * @return array of Class present for database table.
      */
-    public abstract Class<? extends ITable>[] getTableClasses();
+    public abstract List<Class<? extends ITable>> getTableClasses();
 
     /**
      * Get version of database

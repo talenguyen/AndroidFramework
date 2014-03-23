@@ -1,5 +1,7 @@
 package com.talenguyen.androidframework.module.database;
 
+import java.util.List;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -15,13 +17,13 @@ public class SQLiteOpenHelperEx extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        final Class<? extends ITable>[] tables = contract.getTableClasses();
-        if (tables == null || tables.length == 0) {
+        final List<Class<? extends ITable>> tables = contract.getTableClasses();
+        if (tables == null || tables.size() == 0) {
             return;
         }
 
-        for (int i = 0; i < tables.length; i++) {
-            final Class<? extends ITable> table = tables[i];
+        for (int i = 0, count = tables.size(); i < count; i++) {
+            final Class<? extends ITable> table = tables.get(i);
             final String createStatement = SQLiteHelper.buildCreateTableStatement(table);
             sqLiteDatabase.execSQL(createStatement);
         }
@@ -29,13 +31,13 @@ public class SQLiteOpenHelperEx extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        final Class<? extends ITable>[] tables = contract.getTableClasses();
-        if (tables == null || tables.length == 0) {
+        final List<Class<? extends ITable>> tables = contract.getTableClasses();
+        if (tables == null || tables.size() == 0) {
             return;
         }
 
-        for (int i = 0; i < tables.length; i++) {
-            final Class<? extends ITable> table = tables[i];
+        for (int i = 0, count = tables.size(); i < count; i++) {
+            final Class<? extends ITable> table = tables.get(i);
             final String deleteStatement = SQLiteHelper.buildDeleteTableStatement(table);
             sqLiteDatabase.execSQL(deleteStatement);
         }
