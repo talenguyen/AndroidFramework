@@ -22,6 +22,7 @@ public abstract class BaseContentProvider extends ContentProvider {
 	private SQLiteOpenHelper mSQLiteOpenHelper;
 	private UriMatcher mUriMatcher;
 	private List<Class<? extends ITable>> mTables;
+	private int mTableCount;
 	
 
 	@Override
@@ -39,14 +40,16 @@ public abstract class BaseContentProvider extends ContentProvider {
 			throw new NullPointerException("List<ITable> can not be null");
 		}
 		
+		mTableCount = mTables.size();
+		
 		final String authority = getAuthority();
 		
 		mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		
-		for (int i = 0, count = mTables.size(); i < count; i++) {
+		for (int i = 0; i < mTableCount; i++) {
 			final Class<?> table = mTables.get(i);
 			mUriMatcher.addURI(authority, table.getSimpleName(), i);
-			mUriMatcher.addURI(authority, table.getSimpleName() + "/#", i);
+			mUriMatcher.addURI(authority, table.getSimpleName() + "/#", i + mTableCount);
 		}
 		
 		return true;
@@ -65,10 +68,14 @@ public abstract class BaseContentProvider extends ContentProvider {
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		int count;
-		final int matchedIndex = mUriMatcher.match(uri);
+		long id = -1;
+		int matchedIndex = mUriMatcher.match(uri);
 		if (matchedIndex < 0) {
 			// In case there is no match
 			throw new IllegalArgumentException("Unknown URI " + uri);
+		} else if (matchedIndex >= mTableCount) {
+			id = ContentUris.parseId(uri);
+			matchedIndex -= mTableCount;
 		}
 		
 		final String table = mTables.get(matchedIndex).getSimpleName();
@@ -76,9 +83,6 @@ public abstract class BaseContentProvider extends ContentProvider {
 		// Opens the database object in "write" mode.
 		final SQLiteDatabase db = mSQLiteOpenHelper.getWritableDatabase();
 		
-
-		final long id = ContentUris.parseId(uri);
-		 
 		if (id == -1) {
 			count = db.delete(table, selection, selectionArgs);
 		} else {
@@ -105,10 +109,12 @@ public abstract class BaseContentProvider extends ContentProvider {
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
-		final int matchedIndex = mUriMatcher.match(uri);
+		int matchedIndex = mUriMatcher.match(uri);
 		if (matchedIndex < 0) {
 			// In case there is no match
 			throw new IllegalArgumentException("Unknown URI " + uri);
+		} else if (matchedIndex >= mTableCount) {
+			matchedIndex -= mTableCount;
 		}
 		
 		final String table = mTables.get(matchedIndex).getSimpleName();
@@ -136,15 +142,18 @@ public abstract class BaseContentProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		final int matchedIndex = mUriMatcher.match(uri);
+		long id = -1;
+		int matchedIndex = mUriMatcher.match(uri);
 		if (matchedIndex < 0) {
 			// In case there is no match
 			throw new IllegalArgumentException("Unknown URI " + uri);
+		} else if (matchedIndex >= mTableCount) {
+			id = ContentUris.parseId(uri);
+			matchedIndex -= mTableCount;
 		}
 		
 		final String table = mTables.get(matchedIndex).getSimpleName();
 		
-		final long id = ContentUris.parseId(uri);
 		 
 		// Constructs a new query builder and sets its table name
 		final SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
@@ -180,10 +189,14 @@ public abstract class BaseContentProvider extends ContentProvider {
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
 		int count;
-		final int matchedIndex = mUriMatcher.match(uri);
+		long id = -1;
+		int matchedIndex = mUriMatcher.match(uri);
 		if (matchedIndex < 0) {
 			// In case there is no match
 			throw new IllegalArgumentException("Unknown URI " + uri);
+		} else if (matchedIndex >= mTableCount) {
+			matchedIndex -= mTableCount;
+			id = ContentUris.parseId(uri);
 		}
 		
 		final String table = mTables.get(matchedIndex).getSimpleName();
@@ -191,9 +204,6 @@ public abstract class BaseContentProvider extends ContentProvider {
 		// Opens the database object in "write" mode.
 		final SQLiteDatabase db = mSQLiteOpenHelper.getWritableDatabase();
 		
-
-		final long id = ContentUris.parseId(uri);
-		 
 		if (id == -1) {
 			// Does the update and returns the number of rows updated.
 			count = db.update(table, // The database table name.

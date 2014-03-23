@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.content.CursorLoader;
 
 public class ContentProviderUtil {
 
@@ -15,9 +16,12 @@ public class ContentProviderUtil {
 
     private static ContentResolver sContentResolver;
 
+	private static Context sContext;
+
     public static void init(Context context, String authority) {
         sBaseUri = "content://" + authority;
         sContentResolver = context.getContentResolver();
+        sContext = context;
     }
 
     /**
@@ -76,6 +80,7 @@ public class ContentProviderUtil {
     public static int delete(ITable item) {
         // Verify required first
         verify();
+        
         return sContentResolver.delete(getUri(item.getClass()), "_id LIKE ?",
                 new String[]{String.valueOf(item.get_id())});
     }
@@ -106,9 +111,29 @@ public class ContentProviderUtil {
         return sContentResolver
                 .query(getUri(tableClass), null, selection, selectionArgs, sortOrder);
     }
+    
+    /**
+     * 
+     * @param tableClass    The table where perform query
+     * @param selection     A filter declaring which rows to return, formatted as an SQL WHERE
+     *                      clause (excluding the WHERE itself). Passing null will return all rows
+     *                      for the given URI.
+     * @param selectionArgs You may include ?s in selection, which will be replaced by the values
+     *                      from selectionArgs, in the order that they appear in the selection. The
+     *                      values will be bound as Strings.
+     * @param sortOrder     How to order the rows, formatted as an SQL ORDER BY clause (excluding
+     *                      the ORDER BY itself). Passing null will use the default sort order,
+     *                      which may be unordered.
+     * @return
+     */
+    public static CursorLoader getCursorLoader(Class<? extends ITable> tableClass, String selection, String[] selectionArgs, String sortOrder) {
+    	verify();
+    	
+    	return new CursorLoader(sContext, getUri(tableClass), null, selection, selectionArgs, sortOrder);
+    }
 
     private static void verify() {
-        if (sContentResolver == null) {
+        if (sContext == null || sContentResolver == null) {
             throw new NullPointerException("Call init(Context context, String authority) first");
         }
     }
