@@ -77,12 +77,26 @@ public class ContentProviderUtil {
      *
      * @return The number of rows deleted.
      */
-    public static int delete(ITable item) {
+    public static int delete(ITable... items) {
+    	if (items == null || items.length == 0) {
+    		return 0;
+    	}
+    	
         // Verify required first
         verify();
         
-        return sContentResolver.delete(getUri(item.getClass()), "_id LIKE ?",
-                new String[]{String.valueOf(item.get_id())});
+        // Build the where and selection args.
+        final StringBuilder sb = new StringBuilder("_id in (");
+        final String[] ids = new String[items.length];
+        for (int i = 0; i < items.length; i++) {
+        	if (i == items.length - 1) {
+        		sb.append("?)");
+        	} else {
+        		sb.append("?, ");
+        	}
+        	ids[i] = String.valueOf(items[i].get_id());
+		}
+        return sContentResolver.delete(getUri(items[0].getClass()), sb.toString(), ids);
     }
 
     /**

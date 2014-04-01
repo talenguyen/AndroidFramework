@@ -1,6 +1,8 @@
 package com.talenguyen.androidframework.utils;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.widget.Toast;
 
 public class UIUtils {
 
@@ -32,6 +34,14 @@ public class UIUtils {
 			break;
 		}
 		return Color.parseColor(hexString.toString());
+	}
+	
+	public static void showToastShort(Context context, String message) {
+		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+	}
+	
+	public static void showToastLongth(Context context, String message) {
+		Toast.makeText(context, message, Toast.LENGTH_LONG).show();
 	}
 	
 }
