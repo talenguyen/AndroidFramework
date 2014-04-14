@@ -13,3 +13,6 @@
 assets
 *.classpath
 *.project
+*.iml
+projectlibs/google-play-services_lib/gen/
+test/AndroidFrameworkL/gen/
