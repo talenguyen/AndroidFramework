@@ -16,3 +16,5 @@ assets
 *.iml
 projectlibs/google-play-services_lib/gen/
 test/AndroidFrameworkL/gen/
+test/AnimationsDemo/bin/
+projectlibs/google-play-services_lib/bin/
