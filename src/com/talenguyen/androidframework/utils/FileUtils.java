@@ -81,16 +81,18 @@ public class FileUtils {
      * @throws java.util.zip.ZipException
      * @throws java.io.IOException
      */
-    public static void unZip(String zipFile, String outputPath,
+    public static String unZip(String zipFile, String outputPath,
                              boolean deletedFileSource) throws ZipException, IOException {
         int BUFFER = 2048; // 2 Kbs
         File file = new File(zipFile);
 
-        if (outputPath == null) {
-            final int index = file.getAbsolutePath().lastIndexOf(".");
-            outputPath = file.getPath().substring(0, index);
+        final String temp;
+        final int index = file.getAbsolutePath().lastIndexOf(".");
+        if (index > 0) {
+            temp = file.getPath().substring(0, index) + "_temp";
+        } else {
+            temp = file.getPath() + "_temp";
         }
-        mkdirs(outputPath);
 
         ZipFile zip = null;
 
@@ -103,7 +105,7 @@ public class FileUtils {
             while (zipFileEntries.hasMoreElements()) {
                 // grab a zip file entry
                 ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
-                File destFile = new File(outputPath, entry.getName());
+                File destFile = new File(temp, entry.getName());
 
                 if (entry.isDirectory()) {
                     mkdirs(destFile.getAbsolutePath());
@@ -138,9 +140,19 @@ public class FileUtils {
                 zip.close();
             }
         }
+
+        final File tempFile = new File(temp);
+        if (outputPath == null || outputPath.equals(zipFile)) {
+            outputPath = temp.replace("temp", "");
+            tempFile.renameTo(new File(outputPath));
+        } else {
+            tempFile.renameTo(new File(outputPath));
+        }
+
         if (deletedFileSource) {
             rm(zipFile);
         }
+        return outputPath;
     }
 
     /**
