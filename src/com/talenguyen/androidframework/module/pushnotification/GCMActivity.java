@@ -60,6 +60,7 @@ public abstract class GCMActivity extends FragmentActivity {
             }
         } else {
             Log.i(TAG, "No valid Google Play Services APK found.");
+            return;
         }
     }
     
@@ -75,7 +76,10 @@ public abstract class GCMActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         // Check device for Play Services APK.
-        checkPlayServices();
+        if (!checkPlayServices()) {
+            return;
+        }
+
     }
 
     /**
