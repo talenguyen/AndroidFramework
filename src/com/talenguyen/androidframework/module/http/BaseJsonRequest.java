@@ -17,7 +17,7 @@ import java.util.Map;
  * Date: 11/29/13
  * Time: 4:34 PM
  */
-public class BaseRequest<T> extends Request<T> {
+public class BaseJsonRequest<T> extends Request<T> {
 
     /**
      * Charset for request.
@@ -28,7 +28,7 @@ public class BaseRequest<T> extends Request<T> {
      */
     private static final String PROTOCOL_CONTENT_TYPE =
             String.format("application/json; charset=%s", PROTOCOL_CHARSET);
-    private static final String TAG = BaseRequest.class.getSimpleName();
+    private static final String TAG = BaseJsonRequest.class.getSimpleName();
 
     private final Class<? extends T> mClazz;
 
@@ -37,7 +37,7 @@ public class BaseRequest<T> extends Request<T> {
     private ErrorListener mErrorListener;
     private String mRequestBody;
 
-    public BaseRequest(int method, String url, Class<? extends T> clazz, Listener<T> listener, ErrorListener errorListener) {
+    public BaseJsonRequest(int method, String url, Class<? extends T> clazz, Listener<T> listener, ErrorListener errorListener) {
         super(method, url, errorListener);
         mErrorListener = errorListener;
         mListener = listener;
