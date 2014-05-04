@@ -3,6 +3,8 @@ package com.talenguyen.androidframework.module.database;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.talenguyen.androidframework.module.reflection.ClassParser;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

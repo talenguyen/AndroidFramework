@@ -5,6 +5,8 @@ import java.util.Locale;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.talenguyen.androidframework.module.reflection.ClassParser;
+import com.talenguyen.androidframework.module.reflection.MethodParser;
 import com.talenguyen.androidframework.utils.ReflectionUtil;
 
 /**

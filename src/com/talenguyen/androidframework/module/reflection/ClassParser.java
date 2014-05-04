@@ -1,4 +1,4 @@
-package com.talenguyen.androidframework.module.database;
+package com.talenguyen.androidframework.module.reflection;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -10,10 +10,10 @@ import java.util.List;
  * Date: 12/22/13
  * Time: 12:24 AM
  */
-class ClassParser {
+public class ClassParser {
 
-    List<MethodParser> methods;
-    String[] getterFields;
+    public List<MethodParser> methods;
+    public String[] getterFields;
 
     public ClassParser(List<MethodParser> methods, String[] getterFields) {
         this.methods = methods;

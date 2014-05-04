@@ -1,4 +1,4 @@
-package com.talenguyen.androidframework.module.database;
+package com.talenguyen.androidframework.module.reflection;
 
 import java.lang.reflect.Method;
 
@@ -8,10 +8,10 @@ import java.lang.reflect.Method;
  * Date: 12/22/13
  * Time: 12:19 AM
  */
-class MethodParser {
-    String getterName;
-    String getterMethod;
-    String returnType;
+public class MethodParser {
+    public String getterName;
+    public String getterMethod;
+    public String returnType;
 
     public static MethodParser parse(Method method) {
         if (method == null) {
