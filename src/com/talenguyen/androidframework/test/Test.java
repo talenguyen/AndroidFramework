@@ -1,6 +1,5 @@
 package com.talenguyen.androidframework.test;
 
-import com.talenguyen.androidframework.utils.UIUtils;
 
 public class Test {
 

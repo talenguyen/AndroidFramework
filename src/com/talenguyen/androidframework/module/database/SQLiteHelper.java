@@ -5,6 +5,8 @@ import java.util.Locale;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.talenguyen.androidframework.utils.ReflectionUtil;
+
 /**
  * Created with IntelliJ IDEA.
  * User: GIANG
