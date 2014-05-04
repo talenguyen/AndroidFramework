@@ -21,7 +21,7 @@ public class ReflectionUtil {
      * @return The result from return of method or null if Exception occur.
      */
     public static Object involveMethod(Object target, String methodName, Object... params) {
-        Class[] paramsClass = null;
+        Class<?>[] paramsClass = null;
         if (params != null && params.length > 0) {
             paramsClass = new Class[params.length];
             for (int i = 0; i < params.length; i++) {
@@ -60,7 +60,7 @@ public class ReflectionUtil {
                 return clazz.newInstance();
             }
 
-            final Class[] paramsClass = new Class[params.length];
+            final Class<?>[] paramsClass = new Class[params.length];
             for (int i = 0; i < params.length; i++) {
                 paramsClass[i] = getPrimaryTypeClass(params[i].getClass());
             }
