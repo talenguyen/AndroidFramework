@@ -1,159 +1,158 @@
 package com.talenguyen.androidframework.module.database;
 
-import java.util.Locale;
+import java.lang.reflect.Field;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.talenguyen.androidframework.module.reflection.ClassParser;
-import com.talenguyen.androidframework.module.reflection.MethodParser;
-import com.talenguyen.androidframework.utils.ReflectionUtil;
-
 /**
- * Created with IntelliJ IDEA.
- * User: GIANG
- * Date: 12/22/13
- * Time: 12:29 AM
+ * Created with IntelliJ IDEA. User: GIANG Date: 12/22/13 Time: 12:29 AM
  */
 public class SQLiteHelper {
 
-    private static final Locale DEFAULT_LOCALE = Locale.getDefault();
-
 	public static String buildCreateTableStatement(Class<?> clazz) {
-        final ClassParser classParser = ClassParser.parse(clazz);
-        if (classParser == null || classParser.methods == null || classParser.methods.size() == 0) {
-            return null;
-        }
+		if (clazz == null) {
+			return null;
+		}
 
-        final StringBuilder columnsBuilder = new StringBuilder("");
-        for (int i = 0, count = classParser.methods.size(); i < count; i++) {
-            final MethodParser methodParser = classParser.methods.get(i);
-            final String columnDeclareString = buildColumnDeclareStatement(methodParser);
-            if (columnDeclareString != null) {
-                columnsBuilder.append(columnDeclareString);
-                columnsBuilder.append(",");
-            }
-        }
-        if (columnsBuilder.length() == 0) {
-            return null;
-        }
-        columnsBuilder.deleteCharAt(columnsBuilder.length() - 1);
+		final Field[] fields = clazz.getDeclaredFields();
+		if (fields == null || fields.length == 0) {
+			return null;
+		}
 
-        final StringBuilder createTableStatementBuilder = new StringBuilder("");
-        createTableStatementBuilder.append("CREATE TABLE ");
-        createTableStatementBuilder.append(clazz.getSimpleName());
-        createTableStatementBuilder.append(" (");
-        createTableStatementBuilder.append(columnsBuilder.toString());
-        createTableStatementBuilder.append(" );");
-        return createTableStatementBuilder.toString();
-    }
+		final StringBuilder columnsBuilder = new StringBuilder("");
+		for (int i = 0; i < fields.length; i++) {
+			final Field field = fields[i];
+			final String columnDeclareString = buildColumnDeclareStatement(field);
+			if (columnDeclareString != null) {
+				columnsBuilder.append(columnDeclareString);
+				columnsBuilder.append(",");
+			}
+		}
+		if (columnsBuilder.length() == 0) {
+			return null;
+		}
+		columnsBuilder.deleteCharAt(columnsBuilder.length() - 1);
 
-    public static String buildDeleteTableStatement(Class<?> clazz) {
-        if (clazz == null) {
-            return null;
-        }
-        return "DROP TABLE IF EXISTS " + clazz.getSimpleName();
-    }
+		final StringBuilder createTableStatementBuilder = new StringBuilder("");
+		createTableStatementBuilder.append("CREATE TABLE ");
+		createTableStatementBuilder.append(clazz.getSimpleName());
+		createTableStatementBuilder.append(" (");
+		createTableStatementBuilder.append(columnsBuilder.toString());
+		createTableStatementBuilder.append(" );");
+		return createTableStatementBuilder.toString();
+	}
 
-    public static ContentValues buildContentValue(Object item) {
-        final ClassParser classParser = ClassParser.parse(item.getClass());
-        if (classParser == null || classParser.methods == null || classParser.methods.size() == 0) {
-            return null;
-        }
+	public static String buildDeleteTableStatement(Class<?> clazz) {
+		if (clazz == null) {
+			return null;
+		}
+		return "DROP TABLE IF EXISTS " + clazz.getSimpleName();
+	}
+	
+	public static ContentValues convert2ContentValues(Object object)
+			throws IllegalArgumentException, IllegalAccessException {
+		if (object == null) {
+			return null;
+		}
 
-        final ContentValues contentValues = new ContentValues();
-        for (int i = 0, count = classParser.methods.size(); i < count; i++) {
-            final MethodParser methodParser = classParser.methods.get(i);
-            if (methodParser.getterName.equals("_id")) {
-                continue;
-            }
-            Object resultData;
-            if (methodParser.returnType.toLowerCase(DEFAULT_LOCALE).contains("boolean")) {
-                resultData = ReflectionUtil.involveMethod(item, "is" + methodParser.getterName);
-                if (resultData.toString().equals("true")) {
-                    resultData = 1;
-                } else {
-                    resultData = 0;
-                }
-            } else {
-                resultData = ReflectionUtil.involveMethod(item, "get" + methodParser.getterName);
-            }
-            if (resultData == null) {
-                continue;
-            }
-            contentValues.put(methodParser.getterName, String.valueOf(resultData));
-        }
-        return contentValues;
-    }
+		final Class<?> clazz = object.getClass();
+		final Field[] fields = clazz.getDeclaredFields();
+		if (fields == null || fields.length == 0) {
+			return null;
+		}
 
-    public static <T> T fromCursor(Cursor cursor, Class<? extends T> table) {
-        final ClassParser classParser = ClassParser.parse(table);
-        if (classParser == null || classParser.methods == null || classParser.methods.size() == 0) {
-            return null;
-        }
+		final ContentValues contentValues = new ContentValues();
+		for (Field field : fields) {
+			field.setAccessible(true);
+			final String type = field.getType().toString();
+			if (type.equals("int") || type.contains("java.lang.Integer")) {
+				contentValues.put(field.getName(), (Integer) field.get(object));
+			} else if (type.equals("boolean")
+					|| type.contains("java.lang.Boolean")) {
+				contentValues.put(field.getName(), (Boolean) field.get(object));
+			} else if (type.equals("long") || type.contains("java.lang.Long")) {
+				contentValues.put(field.getName(), (Long) field.get(object));
+			} else if (type.equals("float") || type.contains("java.lang.Float")) {
+				contentValues.put(field.getName(), (Float) field.get(object));
+			} else if (type.equals("double")
+					|| type.contains("java.lang.Double")) {
+				contentValues.put(field.getName(), (Double) field.get(object));
+			} else if (type.contains("java.lang.String")) {
+				contentValues.put(field.getName(), (String) field.get(object));
+			}
+		}
 
-        final T item = ReflectionUtil.newInstance(table);
-        final int size = classParser.methods.size();
-        for (int i = 0; i < size; i++) {
-            final MethodParser methodParser = classParser.methods.get(i);
-            final String getterMethod = getCursorGetterMethod(methodParser.returnType);
-            if (getterMethod != null) {
-                final int index = cursor.getColumnIndex(methodParser.getterName);
-                if (index == -1) {
-                    continue;
-                }
-                final Object value = ReflectionUtil.involveMethod(cursor, getterMethod, index);
-                if (methodParser.returnType.toLowerCase(DEFAULT_LOCALE).contains("boolean")) {
-                    ReflectionUtil.involveMethod(item, "set" + methodParser.getterName, Integer.valueOf(value.toString()) == 0 ? false : true );
-                } else {
-                    ReflectionUtil.involveMethod(item, "set" + methodParser.getterName, value);
-                }
-            }
-        }
-        return item;
-    }
+		return contentValues;
+	}
 
-    private static String buildColumnDeclareStatement(MethodParser method) {
-        final String sqliteType = mapToSQLiteType(method.returnType);
-        if (sqliteType != null) {
-            final StringBuilder methodDeclareBuilder = new StringBuilder("");
-            methodDeclareBuilder.append(method.getterName);
-            methodDeclareBuilder.append(" ");
-            methodDeclareBuilder.append(sqliteType);
-            if (method.getterName.equals("_id")) {
-                methodDeclareBuilder.append(" primary key autoincrement");
-            }
-            return methodDeclareBuilder.toString();
-        }
-        return null;
-    }
+	public static <T> T fromCursor(Cursor cursor, Class<T> destClass)
+			throws InstantiationException, IllegalAccessException {
+		if (cursor == null) {
+			return null;
+		}
 
+		T result = destClass.newInstance();
 
-    private static String getCursorGetterMethod(String returnType) {
-        if (returnType.toLowerCase(DEFAULT_LOCALE).contains("int") || returnType.toLowerCase(DEFAULT_LOCALE).contains("boolean")) {
-            return "getInt";
-        } else if (returnType.toLowerCase(DEFAULT_LOCALE).contains("long")) {
-            return "getLong";
-        } else if (returnType.toLowerCase(DEFAULT_LOCALE).contains("float")) {
-            return "getFloat";
-        } else if (returnType.toLowerCase(DEFAULT_LOCALE).contains("double")) {
-            return "getDouble";
-        } else if (returnType.toLowerCase(DEFAULT_LOCALE).contains("string")) {
-            return "getString";
-        }
+		final Class<?> clazz = destClass.getClass();
+		final Field[] fields = clazz.getDeclaredFields();
+		if (fields == null || fields.length == 0) {
+			return result;
+		}
 
-        return null;
-    }
+		for (Field field : fields) {
+			field.setAccessible(true);
+			final String type = field.getType().toString();
+			final int index = cursor.getColumnIndex(field.getName());
+			if (index == -1) {
+				continue;
+			}
+			if (type.equals("int") || type.contains("java.lang.Integer")) {
+				field.setInt(result, cursor.getInt(index));
+			} else if (type.equals("boolean")
+					|| type.contains("java.lang.Boolean")) {
+				field.setBoolean(result, cursor.getInt(index) == 1);
+			} else if (type.equals("long") || type.contains("java.lang.Long")) {
+				field.setLong(result, cursor.getLong(index));
+			} else if (type.equals("float") || type.contains("java.lang.Float")) {
+				field.setFloat(result, cursor.getFloat(index));
+			} else if (type.equals("double")
+					|| type.contains("java.lang.Double")) {
+				field.setDouble(result, cursor.getDouble(index));
+			} else if (type.contains("java.lang.String")) {
+				field.set(result, cursor.getString(index));
+			}
+		}
 
-    private static String mapToSQLiteType(String type) {
-        if (type.toLowerCase(DEFAULT_LOCALE).contains("int") || type.toLowerCase(DEFAULT_LOCALE).contains("long") || type.toLowerCase(DEFAULT_LOCALE).contains("boolean")) {
-            return "INTEGER";
-        } else if (type.equals("float") || type.equals("java.lang.Float") || type.equals("double")) {
-            return "REAL";
-        } else if (type.equals("java.lang.String")) {
-            return "TEXT";
-        }
-        return null;
-    }
+		return result;
+	}
 
+	private static String buildColumnDeclareStatement(Field field) {
+		final String sqliteType = mapToSQLiteType(field.getType().toString());
+		if (sqliteType != null) {
+			final StringBuilder methodDeclareBuilder = new StringBuilder("");
+			methodDeclareBuilder.append(field.getName());
+			methodDeclareBuilder.append(" ");
+			methodDeclareBuilder.append(sqliteType);
+			if (field.getName().equals("_id")) {
+				methodDeclareBuilder.append(" primary key autoincrement");
+			}
+			return methodDeclareBuilder.toString();
+		}
+		return null;
+	}
+
+	private static String mapToSQLiteType(String type) {
+		if (type.equals("int") || type.contains("java.lang.Integer")
+				|| type.equals("long") || type.contains("java.lang.Long")
+				|| type.equals("boolean") || type.contains("java.lang.Boolean")) {
+			return "INTEGER";
+		} else if (type.equals("float") || type.contains("java.lang.Float")
+				|| type.equals("double") || type.contains("java.lang.Double")) {
+			return "REAL";
+		} else if (type.contains("java.lang.String")) {
+			return "TEXT";
+		}
+		return null;
+	}
 }
