@@ -21,6 +21,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ScrollerCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -478,9 +479,9 @@ public class ViewDragHelper {
     /**
      * Enable edge tracking for the selected edges of the parent view. The
      * callback's
-     * {@link me.imid.swipebacklayout.lib.ViewDragHelper.Callback#onEdgeTouched(int, int)}
+     * {@link ViewDragHelper.Callback#onEdgeTouched(int, int)}
      * and
-     * {@link me.imid.swipebacklayout.lib.ViewDragHelper.Callback#onEdgeDragStarted(int, int)}
+     * {@link ViewDragHelper.Callback#onEdgeDragStarted(int, int)}
      * methods will only be invoked for edges for which edge tracking has been
      * enabled.
      *
@@ -503,6 +504,7 @@ public class ViewDragHelper {
      * @see #setEdgeTrackingEnabled(int)
      */
     public int getEdgeSize() {
+        Log.d(TAG, "EdgeSize: " + mEdgeSize);
         return mEdgeSize;
     }
 
@@ -520,7 +522,7 @@ public class ViewDragHelper {
     /**
      * Capture a specific child view for dragging within the parent. The
      * callback will be notified but
-     * {@link me.imid.swipebacklayout.lib.ViewDragHelper.Callback#tryCaptureView(android.view.View, int)}
+     * {@link ViewDragHelper.Callback#tryCaptureView(android.view.View, int)}
      * will not be asked permission to capture this view.
      *
      * @param childView       Child view to capture
