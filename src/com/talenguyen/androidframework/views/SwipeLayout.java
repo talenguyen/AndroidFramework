@@ -91,9 +91,9 @@ public class SwipeLayout extends FrameLayout {
 
     private float mScrollPercent;
 
-    private int mContentLeft;
+    protected int mContentLeft;
 
-    private int mContentTop;
+    protected int mContentTop;
 
     /**
      * The set of listeners to be sent events through.
@@ -104,7 +104,7 @@ public class SwipeLayout extends FrameLayout {
 
     private int mScrimColor = DEFAULT_SCRIM_COLOR;
 
-    private boolean mInLayout;
+    protected boolean mInLayout;
 
     private Rect mTmpRect = new Rect();
 
@@ -374,9 +374,13 @@ public class SwipeLayout extends FrameLayout {
         boolean ret = super.drawChild(canvas, child, drawingTime);
         if (mScrimOpacity > 0 && drawContent
                 && mDragHelper.getViewDragState() != ViewDragHelper.STATE_IDLE) {
-            drawScrim(canvas, child);
+            drawOffsetSpace(canvas, child);
         }
         return ret;
+    }
+
+    protected void drawOffsetSpace(Canvas canvas, View child) {
+        drawScrim(canvas, child);
     }
 
     private void drawScrim(Canvas canvas, View child) {
