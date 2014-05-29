@@ -3,9 +3,24 @@
 
   <!-- A rule to generate the JAR for inclusion in an Android
        application. Output file will be bin/androidframework.jar -->
+   <xmlproperty
+		collapseAttributes="true"
+		file="AndroidManifest.xml"
+		prefix="androidframework" />
+		
   <target name="jar" depends="-compile">
-    <jar destfile="bin/androidframework.jar"
-         basedir="bin/classes" />
+    <jar destfile="${out.library.jar.file}">
+		<fileset 
+			dir="${out.classes.absolute.dir}"
+			includes="**/*.class"
+			excludes="${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class"/>
+		<manifest>
+			<attribute name="Manifest-Version" value="${androidframework.manifest.android:versionName}"/>
+			<attribute name="Specification-Vendor" value="Tale Nguyen"/>
+			<attribute name="Specification-Title" value="AndroidFramework"/>			
+			<attribute name="Implementation-Version" value="${androidframework.manifest.android:versionName}"/>
+		</manifest>
+	</jar>
   </target>
   
   <target name="backup">
@@ -76,6 +91,9 @@
   </target>
   
   <target name="db">
+  
+	<property name="out.library.jar.file" location="${out.absolute.dir}/dbhelper_original.jar" />
+  
 	<!-- Create db folder to source-->
 	<exec executable="cmd">
 		<arg value="/c"/>
