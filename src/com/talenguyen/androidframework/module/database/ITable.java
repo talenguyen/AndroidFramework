@@ -5,8 +5,6 @@ package com.talenguyen.androidframework.module.database;
  */
 public interface ITable {
 
-    long get_id();
-
-    void set_id(long _id);
+    long _id = 0;
 
 }

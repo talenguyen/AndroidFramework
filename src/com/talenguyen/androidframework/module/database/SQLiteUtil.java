@@ -70,7 +70,7 @@ public class SQLiteUtil {
 			values = SQLiteHelper.convert2ContentValues(item);
 			if (values != null) {
 				return update(item.getClass(), values, "_id LIKE ?",
-						new String[] { String.valueOf(item.get_id()) });
+						new String[] { String.valueOf(item._id) });
 			}
 
 		} catch (IllegalArgumentException e) {
@@ -92,7 +92,7 @@ public class SQLiteUtil {
 	 */
 	public static int delete(ITable item) {
 		return delete(item.getClass(), "_id LIKE ?",
-				new String[] { String.valueOf(item.get_id()) });
+				new String[] { String.valueOf(item._id) });
 	}
 
 	/**
