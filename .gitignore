@@ -3,11 +3,7 @@
 /gen
 /out
 /AndroidFramework.iml
-/ant.properties
-/build.xml
 /local.properties
-/proguard-project.txt
-/project.properties
 /test/AnimationsDemo/gen
 .settings
 assets

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="androidframework-rules" default="help">
+
+  <!-- A rule to generate the JAR for inclusion in an Android
+       application. Output file will be bin/androidframework.jar -->
+  <target name="jar" depends="-compile">
+    <jar destfile="bin/androidframework.jar"
+         basedir="bin/classes" />
+  </target>
+  
+  <target name="backup">
+  <!-- Create temp folder-->
+	<exec executable="cmd">
+		<arg value="/c"/>
+		<arg value="mkdir"/>
+		<arg value="temp"/>
+	</exec>
+	<!-- Move res folder to temp folder-->
+	<exec executable="cmd">
+		<arg value="/c"/>
+		<arg value="move"/>
+		<arg value="/y"/>
+		<arg value="res"/>
+		<arg value="temp"/>
+	</exec>
+	<!-- Move src folder to temp folder-->
+	<exec executable="cmd">
+		<arg value="/c"/>
+		<arg value="move"/>
+		<arg value="/y"/>
+		<arg value="src"/>
+		<arg value="temp"/>
+	</exec>
+  </target>
+  <target name="restore">
+	<!-- Delete contents from the res folder-->
+	<exec executable="cmd">
+		<arg value="/c"/>
+		<arg value="rmdir"/>
+		<arg value="/s"/>
+		<arg value="/q"/>
+		<arg value="res"/>
+	</exec>
+	<!-- Delete contents from the src folder-->
+	<exec executable="cmd">
+		<arg value="/c"/>
+		<arg value="rmdir"/>
+		<arg value="/s"/>
+		<arg value="/q"/>
+		<arg value="src"/>
+	</exec>
+	<!-- Move res folder to temp folder-->
+	<exec executable="cmd">
+		<arg value="/c"/>
+		<arg value="move"/>
+		<arg value="/y"/>
+		<arg value="temp\res"/>
+		<arg value="."/>
+	</exec>
+	<!-- Move src folder to temp folder-->
+	<exec executable="cmd">
+		<arg value="/c"/>
+		<arg value="move"/>
+		<arg value="/y"/>
+		<arg value="temp\src"/>
+		<arg value="."/>
+	</exec>
+	<!-- Delete contents from the temp folder-->
+	<exec executable="cmd">
+		<arg value="/c"/>
+		<arg value="rmdir"/>
+		<arg value="/s"/>
+		<arg value="/q"/>
+		<arg value="temp"/>
+	</exec>
+  </target>
+  
+  <target name="db">
+	<!-- Create db folder to source-->
+	<exec executable="cmd">
+		<arg value="/c"/>
+		<arg value="mkdir"/>
+		<arg value="src\com\talenguyen\androidframework\module"/>
+	</exec>
+	
+	<!-- Move src of db to project's src folder-->
+	<exec executable="cmd">
+		<arg value="/c"/>
+		<arg value="copy"/>
+		<arg value="/y"/>
+		<arg value="temp\src\com\talenguyen\androidframework\module\database"/>
+		<arg value="src\com\talenguyen\androidframework\module"/>
+	</exec>
+  </target>
+  
+  <target name="db_jar" depends="backup, db, jar, restore"/>
+
+</project>
