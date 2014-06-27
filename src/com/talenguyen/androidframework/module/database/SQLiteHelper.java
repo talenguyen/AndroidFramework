@@ -64,38 +64,40 @@ public class SQLiteHelper {
 
 		final ContentValues contentValues = new ContentValues();
 		for (Field field : fields) {
-			field.setAccessible(true);
-			final String type = field.getType().toString();
-			if (type.equals("int") || type.contains("java.lang.Integer")) {
-				contentValues.put(field.getName(), (Integer) field.get(object));
-			} else if (type.equals("boolean")
-					|| type.contains("java.lang.Boolean")) {
-				contentValues.put(field.getName(), (Boolean) field.get(object));
-			} else if (type.equals("long") || type.contains("java.lang.Long")) {
-				contentValues.put(field.getName(), (Long) field.get(object));
-			} else if (type.equals("float") || type.contains("java.lang.Float")) {
-				contentValues.put(field.getName(), (Float) field.get(object));
-			} else if (type.equals("double")
-					|| type.contains("java.lang.Double")) {
-				contentValues.put(field.getName(), (Double) field.get(object));
-			} else if (type.contains("java.lang.String")) {
-				contentValues.put(field.getName(), (String) field.get(object));
-			}
-		}
+            if (field.getName().equals("_id")) {
+                continue;
+            }
+            field.setAccessible(true);
+            final String type = field.getType().toString();
+            if (type.equals("int") || type.contains("java.lang.Integer")) {
+                contentValues.put(field.getName(), (Integer) field.get(object));
+            } else if (type.equals("boolean")
+                    || type.contains("java.lang.Boolean")) {
+                contentValues.put(field.getName(), (Boolean) field.get(object));
+            } else if (type.equals("long") || type.contains("java.lang.Long")) {
+                contentValues.put(field.getName(), (Long) field.get(object));
+            } else if (type.equals("float") || type.contains("java.lang.Float")) {
+                contentValues.put(field.getName(), (Float) field.get(object));
+            } else if (type.equals("double")
+                    || type.contains("java.lang.Double")) {
+                contentValues.put(field.getName(), (Double) field.get(object));
+            } else if (type.contains("java.lang.String")) {
+                contentValues.put(field.getName(), (String) field.get(object));
+            }
+        }
 
 		return contentValues;
 	}
 
-	public static <T> T fromCursor(Cursor cursor, Class<T> destClass)
+	public static <T> T fromCursor(Cursor cursor, Class<T> desClass)
 			throws InstantiationException, IllegalAccessException {
 		if (cursor == null) {
 			return null;
 		}
 
-		T result = destClass.newInstance();
+		T result = desClass.newInstance();
 
-		final Class<?> clazz = destClass.getClass();
-		final Field[] fields = clazz.getDeclaredFields();
+		final Field[] fields = desClass.getDeclaredFields();
 		if (fields == null || fields.length == 0) {
 			return result;
 		}
